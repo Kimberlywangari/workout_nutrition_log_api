@@ -26,8 +26,8 @@ class BodyMeasurement(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    age = models.IntegerField()
-    gender = models.CharField(max_length=10)
+    age = models.IntegerField(null=True, blank=True)
+    gender = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.age} - {self.gender}"
