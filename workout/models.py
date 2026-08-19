@@ -13,6 +13,8 @@ class WorkOut(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.workout_type} - {self.date}"
+    class Meta:
+        ordering = ['-date']
 
 class BodyMeasurement(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -23,6 +25,8 @@ class BodyMeasurement(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.weight} - {self.date}"
+    class Meta:
+        ordering = ['-date']
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -31,7 +35,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.age} - {self.gender}"
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
