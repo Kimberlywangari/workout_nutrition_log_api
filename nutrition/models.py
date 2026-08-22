@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
 
 
 class Food(models.Model):
@@ -149,5 +148,3 @@ class PlannedMeal(models.Model):
     def __str__(self):
         return f"{self.meal_plan.name} - {self.planned_date} - {self.meal_type} - {self.food.name}"
 
-    class Meta:
-            ordering = ['meal_type']

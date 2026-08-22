@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class WorkOut(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     workout_type = models.CharField(max_length=55)
     calories_burnt = models.FloatField(null=True, blank=True)
     duration = models.FloatField()
@@ -13,11 +13,23 @@ class WorkOut(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.workout_type} - {self.date}"
+
     class Meta:
         ordering = ['-date']
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(duration__gt=0),
+                name='workout_duration_positive',
+            ),
+            models.CheckConstraint(
+                check=models.Q(calories_burnt__gte=0),
+                name='workout_calories_nonnegative',
+            ),
+        ]
+
 
 class BodyMeasurement(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     weight = models.FloatField()
     height = models.FloatField()
     body_fat_percentage = models.FloatField(null=True, blank=True)
@@ -25,8 +37,25 @@ class BodyMeasurement(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.weight} - {self.date}"
+
     class Meta:
         ordering = ['-date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'date'], name='unique_bodymeasurement_per_user_per_day'
+            ),
+            models.CheckConstraint(
+                check=models.Q(weight__gt=0), name='bodymeasurement_weight_positive'
+            ),
+            models.CheckConstraint(
+                check=models.Q(height__gt=0), name='bodymeasurement_height_positive'
+            ),
+            models.CheckConstraint(
+                check=models.Q(body_fat_percentage__gte=0) & models.Q(body_fat_percentage__lte=100),
+                name='bodymeasurement_bodyfat_in_range',
+            ),
+        ]
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -35,6 +64,15 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.age} - {self.gender}"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(age__gte=0), name='profile_age_nonnegative'
+            ),
+        ]
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
