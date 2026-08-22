@@ -11,10 +11,13 @@ class WorkOutViewSet(viewsets.ModelViewSet):
     filterset_class = WorkOutFilter
 
     def get_queryset(self):
+        if self.request.user.is_superuser:
+            return WorkOut.objects.all()
         return WorkOut.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class BodyMeasurementViewSet(viewsets.ModelViewSet):
     serializer_class = BodyMeasurementSerializer
@@ -22,10 +25,13 @@ class BodyMeasurementViewSet(viewsets.ModelViewSet):
     filterset_class = BodyMeasurementFilter
 
     def get_queryset(self):
+        if self.request.user.is_superuser:
+            return BodyMeasurement.objects.all()
         return BodyMeasurement.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class ProfileViewSet(
     mixins.ListModelMixin,
@@ -38,6 +44,8 @@ class ProfileViewSet(
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Profile.objects.all()
         return Profile.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):

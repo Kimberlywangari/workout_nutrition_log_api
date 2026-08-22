@@ -146,9 +146,3 @@ workout_log_api/
         ├── test_profile_crud.py
         └── test_permissions.py
 ```
- 
-## Notes
- 
-- Deleting a `Profile` deletes the associated `User` account and, via cascade, every `WorkOut` and `BodyMeasurement` belonging to that user. This is intentional — it functions as an "account deletion" endpoint.
-- The `dev.py` and `prod.py` settings files should diverge before any real deployment (`DEBUG`, `ALLOWED_HOSTS`, and secret sourcing all need production-appropriate values).
- 

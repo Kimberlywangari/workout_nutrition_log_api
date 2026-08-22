@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'workout',
     'django_filters',
+    'nutrition',
 
 
 ]
