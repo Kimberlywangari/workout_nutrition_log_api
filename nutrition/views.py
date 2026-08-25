@@ -46,9 +46,8 @@ class LoggedMealViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return LoggedMeal.objects.all()
-        return LoggedMeal.objects.filter(user=self.request.user)
-
+            return LoggedMeal.objects.prefetch_related('items__food').all()
+        return LoggedMeal.objects.filter(user=self.request.user).prefetch_related('items__food')
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
