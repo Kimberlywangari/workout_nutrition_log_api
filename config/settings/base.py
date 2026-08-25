@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'workout',
     'django_filters',
     'nutrition',
+    
 
 
 ]

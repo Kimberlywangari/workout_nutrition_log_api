@@ -1,15 +1,4 @@
-"""
-These tests deliberately call the ORM's .create()/.save() directly, NOT
-through a DRF serializer. Model.save() does not run full_clean() or any
-Python-side validators - it goes straight to an INSERT/UPDATE statement.
-So when one of these raises IntegrityError, that proves the rule is being
-enforced by the database (a UNIQUE index, a CHECK constraint, or a FOREIGN
-KEY constraint) - not by application code.
 
-Each assertion is wrapped in `with transaction.atomic():` so that a caught
-IntegrityError only rolls back to a savepoint, letting the rest of the
-test keep running afterwards.
-"""
 import datetime
 from django.contrib.auth.models import User
 from django.db import IntegrityError, connection, transaction

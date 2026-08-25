@@ -26,6 +26,7 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('workout.urls')),
+    path('api/', include('nutrition.urls')),
     path('', home),
     path('api/login/', obtain_auth_token, name='api_login'),
 ]
