@@ -50,13 +50,16 @@ class LoggedMeal(models.Model):
     meal_type = models.CharField(max_length=10, choices=MEAL_TYPE_CHOICES)
 
     class Meta:
-                ordering = ['-date']
-                constraints = [
+        ordering = ['-date']
+        indexes = [
+            models.Index(fields=['date'], name='loggedmeal_date_idx'),
+        ]
+        constraints = [
             models.UniqueConstraint(
                 fields=['user', 'date', 'meal_type'],
                 name='unique_logged_meal_slot_per_user',
-            ),]
-
+            ),
+        ]
     def __str__(self):
         return f"{self.user.username} - {self.date} - {self.meal_type}"
 
