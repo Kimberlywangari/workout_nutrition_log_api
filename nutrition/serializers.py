@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem
+from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem, NutritionProfile
 
+class NutritionProfileSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = NutritionProfile
+        fields = ['id', 'user', 'daily_calorie_target', 'dietary_preference']
 
 class FoodSerializer(serializers.ModelSerializer):
     class Meta:

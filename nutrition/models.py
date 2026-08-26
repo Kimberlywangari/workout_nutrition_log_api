@@ -1,7 +1,31 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class NutritionProfile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='nutrition_profile'
+    )
+    daily_calorie_target = models.FloatField(null=True, blank=True)
+    dietary_preference = models.CharField(max_length=50, blank=True, default='')
+
+    def __str__(self):
+        return f"{self.user.username} - nutrition profile"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(daily_calorie_target__gte=0),
+                name='nutritionprofile_calorie_target_nonnegative',
+            ),
+        ]
 
 
+@receiver(post_save, sender=User)
+def create_nutrition_profile(sender, instance, created, **kwargs):
+    if created:
+        NutritionProfile.objects.create(user=instance)
 class Food(models.Model):
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, blank=True, default='')

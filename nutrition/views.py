@@ -1,13 +1,22 @@
 from rest_framework import viewsets, permissions
-from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem
+from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem, NutritionProfile
 from .serializers import (
-    FoodSerializer, MealPlanSerializer, PlannedMealSerializer,
+    FoodSerializer, MealPlanSerializer, NutritionProfileSerializer, PlannedMealSerializer,
     LoggedMealSerializer, MealItemSerializer,
 )
 from .permissions import IsMealOwner, IsPlannedMealOwner, IsMealItemOwner
 from .filtering import FoodFilter, LoggedMealFilter
 
 
+class NutritionProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = NutritionProfileSerializer
+    permission_classes = [permissions.IsAuthenticated, IsMealOwner]
+    http_method_names = ['get', 'patch']  
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return NutritionProfile.objects.all()
+        return NutritionProfile.objects.filter(user=self.request.user)
 class FoodViewSet(viewsets.ModelViewSet):
     """Shared reference data - not owned by any one user."""
     queryset = Food.objects.all()

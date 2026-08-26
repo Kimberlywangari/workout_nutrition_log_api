@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.http import JsonResponse
 from rest_framework.authtoken.views import obtain_auth_token
 
+from workout.views import LogoutView, RegisterView
+
 def home(request):
     return JsonResponse({"status": "API is running"})
 
@@ -29,4 +31,6 @@ urlpatterns = [
     path('api/', include('nutrition.urls')),
     path('', home),
     path('api/login/', obtain_auth_token, name='api_login'),
+    path('api/logout/', LogoutView.as_view(), name='api_logout'),
+    path('api/register/', RegisterView.as_view(), name='api_register'),
 ]
