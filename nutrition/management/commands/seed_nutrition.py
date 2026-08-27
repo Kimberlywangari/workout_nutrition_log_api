@@ -52,22 +52,6 @@ class Command(BaseCommand):
 
         today = datetime.date.today()
 
-        plan, _ = MealPlan.objects.get_or_create(
-            user=user, name="Sample training week",
-            defaults=dict(start_date=today, end_date=today + datetime.timedelta(days=6)),
-        )
-        PlannedMeal.objects.get_or_create(
-            meal_plan=plan, food=foods["Chicken breast, grilled"],
-            planned_date=today, meal_type="lunch",
-            defaults=dict(quantity_g=200),
-        )
-        PlannedMeal.objects.get_or_create(
-            meal_plan=plan, food=foods["Sweet potato, boiled"],
-            planned_date=today, meal_type="lunch",
-            defaults=dict(quantity_g=150),
-        )
-        self.stdout.write(self.style.SUCCESS(f"Seeded meal plan '{plan.name}'"))
-
         logged_meal, _ = LoggedMeal.objects.get_or_create(
             user=user, date=today, meal_type="breakfast",
         )

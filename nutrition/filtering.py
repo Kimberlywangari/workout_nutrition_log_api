@@ -1,5 +1,5 @@
 import django_filters
-from .models import Food, LoggedMeal
+from .models import Food, LoggedMeal, MealPlan, PlannedMeal
 
 
 class FoodFilter(django_filters.FilterSet):
@@ -17,3 +17,20 @@ class LoggedMealFilter(django_filters.FilterSet):
     class Meta:
         model = LoggedMeal
         fields = ['date', 'meal_type']
+
+
+class MealPlanFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
+
+    class Meta:
+        model = MealPlan
+        fields = ['name']
+
+
+class PlannedMealFilter(django_filters.FilterSet):
+    date_after = django_filters.DateFilter(field_name='planned_date', lookup_expr='gte')
+    date_before = django_filters.DateFilter(field_name='planned_date', lookup_expr='lte')
+
+    class Meta:
+        model = PlannedMeal
+        fields = ['meal_plan', 'meal_type', 'planned_date']

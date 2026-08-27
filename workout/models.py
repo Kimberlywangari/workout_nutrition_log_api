@@ -57,19 +57,30 @@ class BodyMeasurement(models.Model):
         ]
 
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+# ... WorkOut and BodyMeasurement unchanged ...
+
 class Profile(models.Model):
+    ROLE_CHOICES = [('trainer', 'Trainer'), ('trainee', 'Trainee')]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=10, null=True, blank=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='trainee')
+    trainer = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name='trainees'
+    )
 
     def __str__(self):
-        return f"{self.user.username} - {self.age} - {self.gender}"
+        return f"{self.user.username} - {self.role}"
 
     class Meta:
         constraints = [
-            models.CheckConstraint(
-                check=models.Q(age__gte=0), name='profile_age_nonnegative'
-            ),
+            models.CheckConstraint(check=models.Q(age__gte=0), name='profile_age_nonnegative'),
         ]
 
 
