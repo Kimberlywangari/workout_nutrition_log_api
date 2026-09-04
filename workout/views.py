@@ -10,6 +10,8 @@ from .filtering import WorkOutFilter, BodyMeasurementFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.db.models import Q  # add to imports at top
+
 
 
 class RegisterView(generics.CreateAPIView):
@@ -44,6 +46,7 @@ class MyTraineesView(generics.ListAPIView):
         return User.objects.filter(profile__trainer=self.request.user).order_by('username')
 
 
+
 class WorkOutViewSet(viewsets.ModelViewSet):
     serializer_class = WorkOutSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
@@ -52,6 +55,11 @@ class WorkOutViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return WorkOut.objects.all()
+        profile = getattr(self.request.user, 'profile', None)
+        if profile and profile.role == 'trainer':
+            return WorkOut.objects.filter(
+                Q(user=self.request.user) | Q(user__profile__trainer=self.request.user)
+            )
         return WorkOut.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):

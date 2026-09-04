@@ -58,6 +58,7 @@ class Food(models.Model):
     def __str__(self):
             return f"{self.name} ({self.brand})" if self.brand else self.name
         
+    
 
 class LoggedMeal(models.Model):
     MEAL_TYPE_CHOICES = [
@@ -66,7 +67,7 @@ class LoggedMeal(models.Model):
         ('dinner', 'Dinner'),
         ('snack', 'Snack'),
     ]
-
+    
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='logged_meals'
     )
