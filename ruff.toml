@@ -1,2 +1,9 @@
 [lint]
-ignore = ["RUF012", "DTZ011"]
+# RUF012: fires on standard Django/DRF idioms (Meta.fields, permission_classes)
+# that are conventional, not bugs.
+# DTZ011: flags datetime.date.today() as not timezone-aware, but our models
+# use DateField (calendar dates), where this doesn't apply the same way.
+# EXE001: manage.py has a shebang but isn't marked executable - harmless on
+# Windows (no exec-bit concept) and it's invoked via `python manage.py`
+# anyway, never executed directly.
+ignore = ["RUF012", "DTZ011", "EXE001"]
