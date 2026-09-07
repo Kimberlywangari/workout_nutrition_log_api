@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import WorkOut, BodyMeasurement, Profile
+from .models import BodyMeasurement, Profile, WorkOut
 
 admin.site.register(WorkOut)
 admin.site.register(BodyMeasurement)

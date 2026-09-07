@@ -1,7 +1,8 @@
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework import serializers
-from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem, NutritionProfile
+
+from .models import Food, LoggedMeal, MealItem, MealPlan, NutritionProfile, PlannedMeal
 
 
 class NutritionProfileSerializer(serializers.ModelSerializer):
@@ -91,10 +92,9 @@ class PlannedMealSerializer(serializers.ModelSerializer):
         food = data.get('food', getattr(self.instance, 'food', None))
         meal_type = data.get('meal_type', getattr(self.instance, 'meal_type', None))
 
-        if meal_plan and planned_date:
-            if not (meal_plan.start_date <= planned_date <= meal_plan.end_date):
-                raise serializers.ValidationError(
-                    f"planned_date must fall between {meal_plan.start_date} "
+        if meal_plan and planned_date and not (meal_plan.start_date <= planned_date <= meal_plan.end_date):
+            raise serializers.ValidationError(
+                f"planned_date must fall between {meal_plan.start_date} "
                     f"and {meal_plan.end_date} for this meal plan."
                 )
 

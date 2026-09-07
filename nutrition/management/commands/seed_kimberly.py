@@ -1,8 +1,17 @@
 import datetime
 import random
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from nutrition.models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem, NutritionProfile
+
+from nutrition.models import (
+    Food,
+    LoggedMeal,
+    MealItem,
+    MealPlan,
+    NutritionProfile,
+    PlannedMeal,
+)
 
 FOODS = [
     # name, brand, calories_per_100g, protein_g, carbs_g, fat_g
@@ -58,14 +67,14 @@ class Command(BaseCommand):
         for name, brand, kcal, protein, carbs, fat in FOODS:
             food, _ = Food.objects.get_or_create(
                 name=name, brand=brand,
-                defaults=dict(calories_per_100g=kcal, protein_g=protein, carbs_g=carbs, fat_g=fat),
+                defaults={"calories_per_100g": kcal, "protein_g": protein, "carbs_g": carbs, "fat_g": fat},
             )
             foods[name] = food
         food_list = list(foods.values())
         self.stdout.write(self.style.SUCCESS(f"Seeded {len(food_list)} Food rows"))
 
         NutritionProfile.objects.update_or_create(
-            user=user, defaults=dict(daily_calorie_target=2200, dietary_preference="omnivore"),
+            user=user, defaults={"daily_calorie_target": 2200, "dietary_preference": "omnivore"},
         )
         self.stdout.write(self.style.SUCCESS("Set nutrition profile"))
 
@@ -82,14 +91,14 @@ class Command(BaseCommand):
                 for food in random.sample(food_list, k=random.randint(1, 3)):
                     MealItem.objects.get_or_create(
                         logged_meal=meal, food=food,
-                        defaults=dict(quantity_g=random.randint(50, 300)),
+                        defaults={"quantity_g": random.randint(50, 300)},
                     )
         self.stdout.write(self.style.SUCCESS("Seeded 10 days of logged meals"))
 
         # A meal plan for the upcoming week, with planned meals inside its range.
         plan, _ = MealPlan.objects.get_or_create(
             user=user, name="This week",
-            defaults=dict(start_date=today, end_date=today + datetime.timedelta(days=6)),
+            defaults={"start_date": today, "end_date": today + datetime.timedelta(days=6)},
         )
         for d in range(7):
             plan_date = today + datetime.timedelta(days=d)
@@ -97,7 +106,7 @@ class Command(BaseCommand):
                 for food in random.sample(food_list, k=random.randint(1, 2)):
                     PlannedMeal.objects.get_or_create(
                         meal_plan=plan, food=food, planned_date=plan_date, meal_type=meal_type,
-                        defaults=dict(quantity_g=random.randint(50, 300)),
+                        defaults={"quantity_g": random.randint(50, 300)},
                     )
         self.stdout.write(self.style.SUCCESS(f"Seeded meal plan '{plan.name}'"))
         self.stdout.write(self.style.SUCCESS("Done."))

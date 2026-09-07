@@ -1,8 +1,9 @@
 import datetime
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from nutrition.models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem
 
+from nutrition.models import Food, LoggedMeal, MealItem
 
 FOODS = [
     # name, brand, calories_per_100g, protein_g, carbs_g, fat_g
@@ -42,10 +43,10 @@ class Command(BaseCommand):
         for name, brand, kcal, protein, carbs, fat in FOODS:
             food, _ = Food.objects.get_or_create(
                 name=name, brand=brand,
-                defaults=dict(
-                    calories_per_100g=kcal, protein_g=protein,
-                    carbs_g=carbs, fat_g=fat,
-                ),
+                defaults={
+                    "calories_per_100g": kcal, "protein_g": protein,
+                    "carbs_g": carbs, "fat_g": fat,
+                },
             )
             foods[name] = food
         self.stdout.write(self.style.SUCCESS(f"Seeded {len(foods)} Food rows"))
@@ -57,11 +58,11 @@ class Command(BaseCommand):
         )
         MealItem.objects.get_or_create(
             logged_meal=logged_meal, food=foods["Eggs"],
-            defaults=dict(quantity_g=120),
+            defaults={"quantity_g": 120},
         )
         MealItem.objects.get_or_create(
             logged_meal=logged_meal, food=foods["Chapati"],
-            defaults=dict(quantity_g=80),
+            defaults={"quantity_g": 80},
         )
         self.stdout.write(self.style.SUCCESS("Seeded a logged breakfast"))
         self.stdout.write(self.style.SUCCESS("Done."))

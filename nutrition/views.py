@@ -1,12 +1,17 @@
 from django.db.models import Q
-from rest_framework import viewsets, permissions
-from .models import Food, MealPlan, PlannedMeal, LoggedMeal, MealItem, NutritionProfile
-from .serializers import (
-    FoodSerializer, MealPlanSerializer, NutritionProfileSerializer, PlannedMealSerializer,
-    LoggedMealSerializer, MealItemSerializer,
-)
-from .permissions import IsMealOwner, IsPlannedMealOwner, IsMealItemOwner
+from rest_framework import permissions, viewsets
+
 from .filtering import FoodFilter, LoggedMealFilter, MealPlanFilter, PlannedMealFilter
+from .models import Food, LoggedMeal, MealItem, MealPlan, NutritionProfile, PlannedMeal
+from .permissions import IsMealItemOwner, IsMealOwner, IsPlannedMealOwner
+from .serializers import (
+    FoodSerializer,
+    LoggedMealSerializer,
+    MealItemSerializer,
+    MealPlanSerializer,
+    NutritionProfileSerializer,
+    PlannedMealSerializer,
+)
 
 # NutritionProfileViewSet, FoodViewSet, MealItemViewSet unchanged
 

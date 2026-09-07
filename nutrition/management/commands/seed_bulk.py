@@ -1,7 +1,9 @@
-import random
 import datetime
+import random
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
+
 from nutrition.models import Food, LoggedMeal, MealItem
 
 MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack']

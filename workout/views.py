@@ -1,17 +1,19 @@
-from rest_framework import viewsets, permissions, mixins, generics, status
-from .models import WorkOut, BodyMeasurement, Profile
-from .serializers import (
-    WorkOutSerializer, BodyMeasurementSerializer, ProfileSerializer,
-    RegisterSerializer, TrainerSerializer,
-)
-from .permissions import IsOwner
-from .filtering import WorkOutFilter, BodyMeasurementFilter
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db.models import Q  # add to imports at top
+from rest_framework import generics, mixins, permissions, status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from .filtering import BodyMeasurementFilter, WorkOutFilter
+from .models import BodyMeasurement, Profile, WorkOut
+from .permissions import IsOwner
+from .serializers import (
+    BodyMeasurementSerializer,
+    ProfileSerializer,
+    RegisterSerializer,
+    TrainerSerializer,
+    WorkOutSerializer,
+)
 
 
 class RegisterView(generics.CreateAPIView):

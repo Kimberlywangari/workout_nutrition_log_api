@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
-from workout.models import WorkOut, BodyMeasurement, Profile
+from rest_framework.test import APITestCase
+
+from workout.models import BodyMeasurement, Profile, WorkOut
 
 
 class NonOwnerPermissionTests(APITestCase):

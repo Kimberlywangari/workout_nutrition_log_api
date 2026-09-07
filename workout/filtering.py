@@ -1,5 +1,6 @@
 import django_filters
-from .models import WorkOut, BodyMeasurement
+
+from .models import BodyMeasurement, WorkOut
 
 
 class WorkOutFilter(django_filters.FilterSet):

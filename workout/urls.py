@@ -1,6 +1,13 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import WorkOutViewSet, BodyMeasurementViewSet, ProfileViewSet, TrainerListView, MyTraineesView
+
+from .views import (
+    BodyMeasurementViewSet,
+    MyTraineesView,
+    ProfileViewSet,
+    TrainerListView,
+    WorkOutViewSet,
+)
 
 router = DefaultRouter()
 router.register(r'workouts', WorkOutViewSet, basename='workout')

@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 
 class WorkOut(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -56,13 +57,6 @@ class BodyMeasurement(models.Model):
             ),
         ]
 
-
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-# ... WorkOut and BodyMeasurement unchanged ...
 
 class Profile(models.Model):
     ROLE_CHOICES = [('trainer', 'Trainer'), ('trainee', 'Trainee')]
