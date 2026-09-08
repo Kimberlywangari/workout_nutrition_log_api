@@ -38,6 +38,19 @@ jobs:
     environment: production
 
     steps:
+      - name: Check out deployment files
+        uses: actions/checkout@v4
+
+      - name: Copy Compose file to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST || '206.189.235.97' }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          passphrase: ${{ secrets.DEPLOY_SSH_PASSPHRASE }}
+          source: docker-compose.yml
+          target: ${{ secrets.DEPLOY_PATH }}
+
       - name: Deploy production stack
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -48,9 +61,6 @@ jobs:
           script: |
             set -eu
             cd "${{ secrets.DEPLOY_PATH }}"
-            git fetch origin main
-            git checkout main
-            git reset --hard origin/main
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             docker compose pull
             docker compose up -d --remove-orphans
