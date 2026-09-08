@@ -2,6 +2,14 @@ services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    mem_limit: 160m
+    mem_reservation: 96m
+    pids_limit: 100
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "2"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-workout}
       POSTGRES_USER: ${POSTGRES_USER:-workout}
@@ -17,6 +25,14 @@ services:
   api:
     image: ghcr.io/kimberlywangari/workout-nutrition-backend:latest
     restart: unless-stopped
+    mem_limit: 180m
+    mem_reservation: 96m
+    pids_limit: 100
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "2"
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.prod
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
@@ -30,6 +46,14 @@ services:
   frontend:
     image: ghcr.io/kimberlywangari/workout-nutrition-frontend:latest
     restart: unless-stopped
+    mem_limit: 64m
+    mem_reservation: 16m
+    pids_limit: 50
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "2"
     ports:
       - "80:80"
     depends_on:
