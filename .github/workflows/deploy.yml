@@ -62,6 +62,8 @@ jobs:
           script: |
             set -eu
             cd "${{ secrets.DEPLOY_PATH }}"
+            exec 9>/tmp/workout-deploy.lock
+            flock -w 300 9
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
             docker compose up -d db
             db_id=$(docker compose ps -q db)
