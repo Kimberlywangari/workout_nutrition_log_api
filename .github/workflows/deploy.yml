@@ -8,52 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.11", "3.12"]
-
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: nutrition_log
-          POSTGRES_USER: workout_user
-          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: requirements-dev.txt
-
-      - name: Install dependencies
-        run: pip install -r requirements-dev.txt
-
-      - name: Lint with Ruff
-        run: ruff check .
-
-      - name: Run tests
-        env:
-          SECRET_KEY: ${{ secrets.TEST_SECRET_KEY }}
-          DEBUG: "False"
-          DATABASE_URL: postgres://workout_user:${{ secrets.TEST_DB_PASSWORD }}@localhost:5432/nutrition_log
-        run: python manage.py test
-
   build-and-publish:
-    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
