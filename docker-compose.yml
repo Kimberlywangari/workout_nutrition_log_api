@@ -42,6 +42,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - staticfiles:/app/staticfiles
 
   frontend:
     image: ghcr.io/kimberlywangari/workout-nutrition-frontend:latest
@@ -58,6 +60,9 @@ services:
       - "80:80"
     depends_on:
       - api
+    volumes:
+      - staticfiles:/usr/share/nginx/html/static:ro
 
 volumes:
   postgres_data:
+  staticfiles:
