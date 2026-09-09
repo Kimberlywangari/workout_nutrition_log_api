@@ -20,6 +20,16 @@ from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
 
 from workout.views import LogoutView, RegisterView
+from django.db import connection
+
+def health_check(request):
+    try:
+        connection.ensure_connection()
+        db_ok = True
+    except Exception:
+        db_ok = False
+    status = 200 if db_ok else 503
+    return JsonResponse({"status": "ok" if db_ok else "unhealthy", "database": db_ok}, status=status)
 
 
 def home(request):
@@ -27,6 +37,7 @@ def home(request):
 
 
 urlpatterns = [
+    path("health/", health_check),
     path('admin/', admin.site.urls),
     path('api/', include('workout.urls')),
     path('api/', include('nutrition.urls')),
